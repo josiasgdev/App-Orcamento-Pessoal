@@ -72,48 +72,48 @@ class Bd {
     return despesas
   }
 
-  pesquisar(despesa){
+  pesquisar(despesa) {
     //Cria um array que ao ser exibido, motrará as despesas filtradas e o associa à uma variável
-   let despesasFiltradas = Array()
-   //Utiliza a lógica da função recuperarTodosRegistros para fazer uma busca de todas as despesas e adiciona elas ao array despesasFiltradas
-   despesasFiltradas = this.recuperarTodosRegistros()
-   console.log(despesasFiltradas)
-   
-   //filtro ano
-   if(despesa.ano != ''){
-    console.log('filtro de ano')
-    despesasFiltradas = despesasFiltradas.filter(d => d.ano == despesa.ano)
-   }
-  //filtro mes
-   if(despesa.mes != ''){
-    console.log('filtro de mês')
-    despesasFiltradas = despesasFiltradas.filter(d => d.mes == despesa.mes)
-   }
-  //filtro dia
-   if(despesa.dia != ''){
-    console.log('filtro de dia')
-    despesasFiltradas = despesasFiltradas.filter(d => d.dia == despesa.dia)
-   }
-  //filtro tipo
-   if(despesa.tipo != ''){
-    console.log('filtro de tipo')
-    despesasFiltradas = despesasFiltradas.filter(d => d.tipo == despesa.tipo)
-   }
-  //filtro descrição
-   if(despesa.descricao != ''){
-    console.log('filtro de descrição')
-    despesasFiltradas = despesasFiltradas.filter(d => d.descricao.toLowerCase().includes(despesa.descricao.toLowerCase()))
-   }
-   //filtro valor
-   if(despesa.valor != ''){
-    console.log('filtro de valor')
-    despesasFiltradas = despesasFiltradas.filter(d => d.valor == despesa.valor)
-   }
-   
-   return despesasFiltradas
+    let despesasFiltradas = Array()
+    //Utiliza a lógica da função recuperarTodosRegistros para fazer uma busca de todas as despesas e adiciona elas ao array despesasFiltradas
+    despesasFiltradas = this.recuperarTodosRegistros()
+    console.log(despesasFiltradas)
+
+    //filtro ano
+    if (despesa.ano != '') {
+      console.log('filtro de ano')
+      despesasFiltradas = despesasFiltradas.filter(d => d.ano == despesa.ano)
+    }
+    //filtro mes
+    if (despesa.mes != '') {
+      console.log('filtro de mês')
+      despesasFiltradas = despesasFiltradas.filter(d => d.mes == despesa.mes)
+    }
+    //filtro dia
+    if (despesa.dia != '') {
+      console.log('filtro de dia')
+      despesasFiltradas = despesasFiltradas.filter(d => d.dia == despesa.dia)
+    }
+    //filtro tipo
+    if (despesa.tipo != '') {
+      console.log('filtro de tipo')
+      despesasFiltradas = despesasFiltradas.filter(d => d.tipo == despesa.tipo)
+    }
+    //filtro descrição
+    if (despesa.descricao != '') {
+      console.log('filtro de descrição')
+      despesasFiltradas = despesasFiltradas.filter(d => d.descricao.toLowerCase().includes(despesa.descricao.toLowerCase()))
+    }
+    //filtro valor
+    if (despesa.valor != '') {
+      console.log('filtro de valor')
+      despesasFiltradas = despesasFiltradas.filter(d => d.valor == despesa.valor)
+    }
+
+    return despesasFiltradas
 
   }//Fim do filtro de despesas
-} 
+}
 //Fim da classe BD
 //Instanciando o classe BD
 let bd = new Bd();
@@ -178,42 +178,52 @@ function cadastrarDespesa() {
 }
 
 //Carregar lista de despesas
+/*Essa função receve um por dafult um array como parâmetro, 
+pois pode ser chamada pela função pesquisarDespesa(despesas) 
+ou pode ser chamado pelo onload de body consulta.html*/
+function carregarListaDespesas(despesas = Array(), filtro = false) {
 
-function carregarListaDespesas() {
-
-  let despesas = Array()
-
-  despesas = bd.recuperarTodosRegistros()
+  /*Essa condicional verifica se o a função foi chamada pelo onload ou pela função pesquisarDespesa(despesas)
+  analisando se foi passado um array ou não.
+  */
+  if (despesas.length == 0 && filtro == false) {
+    /*Caso não tenha sido passado nenhum tipo de array, 
+    o array do método bd.recuperarTodosRegistros é associado ao default 
+    atribuído na criação da função carregarListaDespesas. 
+    E a segunda parte da condicional verifica se é ou não uma ação de filtragem*/
+    despesas = bd.recuperarTodosRegistros()
+  }
   //selecionando o elemento tbody da tabela
   let listaDespesas = document.getElementById('listaDespesas')
+  listaDespesas.innerHTML = ''
   //percorrer o array despesas, listando cada despesa de forma dinâmica
-  despesas.forEach(function(d){
-  //criando a linha (tr)
-  let linha = listaDespesas.insertRow()
-  // criar as colunas (td)
-  linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`
-  
-  //ajustar o tipo
-  switch(d.tipo){
-    case '1': d.tipo = 'Alimentação'
-    break
-    case '2': d.tipo = 'Educação'
-    break
-    case '3': d.tipo = 'Lazer'
-    break
-    case '4': d.tipo = 'Saúde'
-    break
-    case '5': d.tipo = 'Transporte'
-    break
-  }
-  linha.insertCell(1).innerHTML = d.tipo
-  linha.insertCell(2).innerHTML = d.descricao
-  linha.insertCell(3).innerHTML = d.valor
+  despesas.forEach(function (d) {
+    //criando a linha (tr)
+    let linha = listaDespesas.insertRow()
+    // criar as colunas (td)
+    linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`
+
+    //ajustar o tipo
+    switch (d.tipo) {
+      case '1': d.tipo = 'Alimentação'
+        break
+      case '2': d.tipo = 'Educação'
+        break
+      case '3': d.tipo = 'Lazer'
+        break
+      case '4': d.tipo = 'Saúde'
+        break
+      case '5': d.tipo = 'Transporte'
+        break
+    }
+    linha.insertCell(1).innerHTML = d.tipo
+    linha.insertCell(2).innerHTML = d.descricao
+    linha.insertCell(3).innerHTML = d.valor
   })
 }
 
-function pesquisarDespesa(){
-  let ano = document.getElementById('ano').value 
+function pesquisarDespesa() {
+  let ano = document.getElementById('ano').value
   let mes = document.getElementById('mes').value
   let dia = document.getElementById('dia').value
   let tipo = document.getElementById('tipo').value
@@ -225,30 +235,11 @@ function pesquisarDespesa(){
 
   let despesas = bd.pesquisar(despesa)
 
-  let listaDespesas = document.getElementById('listaDespesas')
-  listaDespesas.innerHTML = ''
-  //percorrer o array despesas, listando cada despesa de forma dinâmica
-  despesas.forEach(function(d){
-  //criando a linha (tr)
-  let linha = listaDespesas.insertRow()
-  // criar as colunas (td)
-  linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`
-  
-  //ajustar o tipo
-  switch(d.tipo){
-    case '1': d.tipo = 'Alimentação'
-    break
-    case '2': d.tipo = 'Educação'
-    break
-    case '3': d.tipo = 'Lazer'
-    break
-    case '4': d.tipo = 'Saúde'
-    break
-    case '5': d.tipo = 'Transporte'
-    break
-  }
-  linha.insertCell(1).innerHTML = d.tipo
-  linha.insertCell(2).innerHTML = d.descricao
-  linha.insertCell(3).innerHTML = d.valor
-  })
+  /*O parâmetro true indica que nesta chamada da função o parâmetro é verdadeiro
+  Fazendo com que caso um campo seja preenchido com um valor inexistente, 
+  todo código de geração de linha e colunas funcione, porém, sem exibir dentro das mesmas.
+  Pois se o conteúdo pesquisado não existe dentro dos objetos e do array, 
+  não tem como exibi-lo na pesquisa, retornando um campo vazio*/
+  carregarListaDespesas(despesas, true)
+
 }
