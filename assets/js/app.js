@@ -66,6 +66,8 @@ class Bd {
       if (despesa === null) {
         continue
       }
+      //Atributo dentro do objeto despesa recuperado pela método recuperarTodosRegistros
+      despesa.id = i
       //insere a depesa referida no laço no array despesas
       despesas.push(despesa)
     }
@@ -113,6 +115,12 @@ class Bd {
     return despesasFiltradas
 
   }//Fim do filtro de despesas
+
+  //Método para remover despesa pelo id
+  remover(id){
+    id = parseInt(id)
+    localStorage.removeItem(id)
+  }
 }
 //Fim da classe BD
 //Instanciando o classe BD
@@ -181,7 +189,7 @@ function cadastrarDespesa() {
 /*Essa função receve um por dafult um array como parâmetro, 
 pois pode ser chamada pela função pesquisarDespesa(despesas) 
 ou pode ser chamado pelo onload de body consulta.html*/
-function carregarListaDespesas(despesas = Array(), filtro = false) {
+function carregarListaDespesas(despesas = Array(), filtro = false) {//Início da função carregarListaDispesas
 
   /*Essa condicional verifica se o a função foi chamada pelo onload ou pela função pesquisarDespesa(despesas)
   analisando se foi passado um array ou não.
@@ -219,8 +227,28 @@ function carregarListaDespesas(despesas = Array(), filtro = false) {
     linha.insertCell(1).innerHTML = d.tipo
     linha.insertCell(2).innerHTML = d.descricao
     linha.insertCell(3).innerHTML = d.valor
+
+    //Botão de exclusão
+
+    //Cria o elemento e o atribui a uma variável
+    let btn = document.createElement("button")
+    //Atribui a ele uma class do bootstrap
+    btn.className = "btn btn-danger"
+    //Insere um ícone do Font Awesome
+    btn.innerHTML = '<i class="fa fa-times"></i>'
+    //Associa a variável usada dentro do foreach de criação dos objetos de despesa para associação do botão à despesa
+    btn.id = `id_despesa_ ${d.id}`
+    btn.onclick = function(){//Remover a despesa
+      //formatar a string e remover a template string "id_despesa_" para a busca e remoção no localStorage
+      let id = this.id.replace('id_despesa_','')
+      bd.remover(id)
+      //Atualiza a página para a remoção programática das linhas e colunas da despesa removida
+      window.location.reload()
+    }
+    //Insere o elemento na quarta coluna na linha respectiva à despesa
+    linha.insertCell(4).append(btn)
   })
-}
+}//Fim da função carregarListaDispesas
 
 function pesquisarDespesa() {
   let ano = document.getElementById('ano').value
