@@ -117,9 +117,30 @@ class Bd {
   }//Fim do filtro de despesas
 
   //Método para remover despesa pelo id
-  remover(id){
+  remover(id) {
     id = parseInt(id)
     localStorage.removeItem(id)
+
+    //Exibe o modal de confirmação
+    //Através do id, insere o seguinte texto no elemento html referido.
+    document.getElementById('modal_titulo').innerHTML = 'Registro excluído com sucesso.'
+    //através do id, altera o nome da class do elemento referido
+    document.getElementById('modal_titulo_div').className = 'modal-header text-info'
+    //Através do id, insere o seguinte texto no elemento html referido.
+    document.getElementById('modal_conteudo').innerHTML = 'Despesa foi removida com sucesso!'
+    //Através do id, insere o seguinte texto no elemento html referido.
+    document.getElementById('modal_btn').innerHTML = 'Voltar'
+    //através do id, altera o nome da class do elemento referido
+    document.getElementById('modal_btn').className = 'btn btn-info'
+
+
+    //Exibe o modal
+    $("#modalRegistraDespesa").modal("show")
+
+    // Após o modal ser fechado, recarrega a tabela de despesas
+    $('#modalRegistraDespesa').on('hidden.bs.modal', () => {
+      carregarListaDespesas();
+    });
   }
 }
 //Fim da classe BD
@@ -238,12 +259,10 @@ function carregarListaDespesas(despesas = Array(), filtro = false) {//Início da
     btn.innerHTML = '<i class="fa fa-times"></i>'
     //Associa a variável usada dentro do foreach de criação dos objetos de despesa para associação do botão à despesa
     btn.id = `id_despesa_ ${d.id}`
-    btn.onclick = function(){//Remover a despesa
+    btn.onclick = function () {//Remover a despesa
       //formatar a string e remover a template string "id_despesa_" para a busca e remoção no localStorage
-      let id = this.id.replace('id_despesa_','')
+      let id = this.id.replace('id_despesa_', '')
       bd.remover(id)
-      //Atualiza a página para a remoção programática das linhas e colunas da despesa removida
-      window.location.reload()
     }
     //Insere o elemento na quarta coluna na linha respectiva à despesa
     linha.insertCell(4).append(btn)
